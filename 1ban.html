@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<meta http-equiv="content-Type" content="text/html; charset=UTF-8" />
+<html>
+<head>
+  <title>抽獎程式</title>
+  <style>
+    /* 限制圖片大小 */
+    img {
+      max-width: 1000px;
+      max-height: 1000px;
+    }
+  </style>  
+</head>
+<body>
+  <h1>歡迎參加阿金金的一番賞抽獎活動！</h1>
+  <h3>請選擇抽獎方式：</h3>
+  <button onclick="drawPrize(1)">單抽</button>&nbsp;&nbsp;&nbsp;
+  <button onclick="drawPrize(3)">三抽</button>&nbsp;&nbsp;&nbsp;
+  <button onclick="drawPrize(5)">五抽</button>
+  <div id="result">
+    <h2>抽獎結果：</h2>
+    <ul id="prizeList"></ul>
+  </div>
+
+  <script>
+    // 獎品清單
+    const prizes = [
+      { name: 'A賞', value: '大吉大利，今晚吃雞 ⋛⋋( ‘Θ’)⋌⋚', image: '', count: 0 },
+      { name: 'B賞', value: 'B咧~B咧~ ｽﾞｲ₍₍ (ง ˘ω˘ )ว ⁾⁾ ⁽⁽ 〪ɾ( ˘ω˘ 〫ɩ ) ₎₎ｽﾞｲ', image: '', count: 1 },
+      { name: 'C賞', value: '是什麼讓我遇見這樣的運氣 [̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]', image: '', count: 3 },
+      { name: 'D賞', value: '恭喜恭喜恭喜你~ ᕕ ( ᐛ ) ᕗ', image: '', count: 4 },
+      { name: 'E賞', value: 'E23牽著手，456抬起頭，789我們一起領~獎~品~', image: '', count: 8 },
+      { name: 'F賞', value: '儲存運氣也是種厲害的策略，佩服佩服 ฅ(๑*д*๑)ฅ!!', image: '', count: 6 },
+      { name: 'G賞', value: '你的書桌要變得豐富了喔 (❍ᴥ❍ʋ)', image: '', count: 8},
+      { name: 'H賞', value: '沒有關係，佳穎給你秀秀 ( ´･･)ﾉ(._.`)', image: '', count: 9 },
+    ];
+
+    // 將獎項按照獎券張數展開，以便後續隨機抽取
+    const expandedPrizes = prizes.reduce((acc, prize) => {
+      for (let i = 0; i < prize.count; i++) {
+        acc.push(prize);
+      }
+      return acc;
+    }, []);
+
+    // 最大抽籤數上限
+    const maxDrawCount = 20;
+
+    //總抽取籤數
+    let totalDrawCount = 0;
+
+    // 隨機選擇一個獎品
+    function drawPrize(times) {
+//      if (totalDrawCount > maxDrawCount) {
+//        alert('抽獎次數已達上限');
+//        return;
+//      }      
+      
+      if ( totalDrawCount + times <= maxDrawCount) {
+        totalDrawCount = totalDrawCount + times;
+      } else {
+        alert('抽獎次數已達上限，若有剩餘次數未抽畢請選擇單抽');
+        return;
+      }
+      
+      if (expandedPrizes.length === 0) {
+        alert('被你抽光了！');
+        return;
+      }
+
+      const resultElement = document.getElementById('result');
+      const prizeListElement = document.getElementById('prizeList');
+      prizeListElement.innerHTML = '';
+
+      let drawCount = 0;
+
+      while (drawCount < times) {
+        const randomIndex = Math.floor(Math.random() * expandedPrizes.length);
+        const selectedPrize = expandedPrizes[randomIndex];
+
+        expandedPrizes.splice(randomIndex, 1); // 從展開的獎項中移除已抽中的獎項
+
+        drawCount++;
+
+        const listItem = document.createElement('li');
+        const prizeImageElement = document.createElement('img');
+        prizeImageElement.src = selectedPrize.image;
+        prizeImageElement.alt = selectedPrize.name;
+        const prizeNameElement = document.createElement('p');
+        prizeNameElement.textContent = `恭喜您獲得${selectedPrize.name}`;
+        const prizeValueElement = document.createElement('p');
+
+
+        if (selectedPrize.value === 0) {
+          prizeValueElement.textContent = `很遺憾，銘謝惠顧`;
+        } else if (selectedPrize.value === '強迫家事券') {
+          prizeValueElement.textContent = `強迫家事券! 該活動身體囉 ▼・ᴥ・▼`;
+        } else {
+          prizeValueElement.textContent = `${selectedPrize.value}`;  
+        }
+
+        listItem.appendChild(prizeNameElement);
+        listItem.appendChild(prizeValueElement);
+//        listItem.appendChild(prizeImageElement);
+        prizeListElement.appendChild(listItem);
+      }
+    }
+  </script>
+  
+  <h3>看看我們的獎品：</h3>
+  <img src="獎單.jpg" />
+
+</body>
+</html>
